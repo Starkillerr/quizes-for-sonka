@@ -38,7 +38,17 @@ export const testsById: Record<string, Test> = Object.fromEntries(
   sectionTests.flatMap((s) => s.tests).map((t) => [t.id, t]),
 )
 
-export type TestResult = { correct: number; total: number }
+// wrong — номери питань, на які ще не відповіли правильно
+export type TestResult = { correct: number; total: number; wrong?: number[] }
+
+// Менше помилок — окремий тест на помилки не пропонуємо
+export const MIN_MISTAKES = 3
+
+export function mistakesTest(test: Test, result?: TestResult): Test | null {
+  const wrong = result?.wrong ?? []
+  if (wrong.length < MIN_MISTAKES) return null
+  return { ...test, questions: test.questions.filter((q) => wrong.includes(q.n)) }
+}
 
 const STORAGE_KEY = 'bio-quiz-results-v2'
 

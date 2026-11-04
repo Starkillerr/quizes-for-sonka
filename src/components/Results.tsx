@@ -1,28 +1,57 @@
-import type { Test } from '../tests'
+import type { Test, TestResult } from '../tests'
 
 type Props = {
   test: Test
+  mistakes: boolean
   answers: number[]
+  overall?: TestResult
+  canRetryMistakes: boolean
   onHome: () => void
   onRetry: () => void
+  onRetryMistakes: () => void
 }
 
-function Results({ test, answers, onHome, onRetry }: Props) {
+function Results({
+  test,
+  mistakes,
+  answers,
+  overall,
+  canRetryMistakes,
+  onHome,
+  onRetry,
+  onRetryMistakes,
+}: Props) {
   const total = test.questions.length
   const correct = test.questions.filter((q, i) => answers[i] === q.correct).length
   const percent = Math.round((correct / total) * 100)
+  const mistakesLeft = overall?.wrong?.length ?? 0
 
   return (
     <main className="page">
       <header className="results-header">
         <h1>
-          {test.sectionTitle} · Тест {test.number} завершено
+          {test.sectionTitle} · Тест {test.number}
+          {mistakes ? ' · помилки виправлено' : ' завершено'}
         </h1>
         <p className="score">
           {correct} з {total} · <strong>{percent}%</strong>
         </p>
+        {mistakes && overall && (
+          <p className="muted">
+            Весь тест: {overall.correct} з {overall.total} ·{' '}
+            {Math.round((overall.correct / overall.total) * 100)}%
+          </p>
+        )}
         <div className="results-actions">
-          <button className="primary-button" onClick={onRetry}>
+          {canRetryMistakes && (
+            <button className="primary-button" onClick={onRetryMistakes}>
+              Перепройти неправильні ({mistakesLeft})
+            </button>
+          )}
+          <button
+            className={canRetryMistakes ? 'secondary-button' : 'primary-button'}
+            onClick={onRetry}
+          >
             Пройти ще раз
           </button>
           <button className="secondary-button" onClick={onHome}>

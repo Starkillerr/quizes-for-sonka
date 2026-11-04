@@ -1,8 +1,8 @@
-import { sectionTests, type TestResult } from '../tests'
+import { mistakesTest, sectionTests, type TestResult } from '../tests'
 
 type Props = {
   results: Record<string, TestResult>
-  onStart: (testId: string) => void
+  onStart: (testId: string, mistakes?: boolean) => void
 }
 
 function Home({ results, onStart }: Props) {
@@ -22,6 +22,7 @@ function Home({ results, onStart }: Props) {
               const percent = result
                 ? Math.round((result.correct / result.total) * 100)
                 : null
+              const mistakes = mistakesTest(test, result)
               return (
                 <li key={test.id}>
                   <button className="test-card" onClick={() => onStart(test.id)}>
@@ -43,6 +44,15 @@ function Home({ results, onStart }: Props) {
                       </span>
                     </div>
                   </button>
+                  {mistakes && (
+                    <button
+                      className="mistakes-link"
+                      onClick={() => onStart(test.id, true)}
+                    >
+                      ↳ Перепройти неправильні · {mistakes.questions.length}{' '}
+                      {questionsWord(mistakes.questions.length)}
+                    </button>
+                  )}
                 </li>
               )
             })}
@@ -51,6 +61,12 @@ function Home({ results, onStart }: Props) {
       ))}
     </main>
   )
+}
+
+function questionsWord(n: number) {
+  const last = n % 10
+  const teen = n % 100 >= 11 && n % 100 <= 14
+  return !teen && last >= 1 && last <= 4 ? 'питання' : 'питань'
 }
 
 function level(percent: number | null) {

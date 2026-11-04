@@ -380,3 +380,20 @@ h2 {
   font-size: 20px;
   margin-bottom: 12px;
 }
+
+.mistakes-link {
+  display: block;
+  margin: 6px 0 0 18px;
+  padding: 6px 12px;
+  background: var(--bad-bg);
+  color: var(--bad);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.mistakes-link:hover {
+  border-color: var(--bad);
+}

@@ -3,11 +3,12 @@ import type { Test } from '../tests'
 
 type Props = {
   test: Test
+  mistakes: boolean
   onExit: () => void
   onFinish: (answers: number[]) => void
 }
 
-function Quiz({ test, onExit, onFinish }: Props) {
+function Quiz({ test, mistakes, onExit, onFinish }: Props) {
   const [index, setIndex] = useState(0)
   const [answers, setAnswers] = useState<number[]>([])
 
@@ -35,7 +36,8 @@ function Quiz({ test, onExit, onFinish }: Props) {
           ← На головну
         </button>
         <span className="muted">
-          {test.sectionTitle} · Тест {test.number} · {index + 1} / {test.questions.length}
+          {test.sectionTitle} · Тест {test.number}
+          {mistakes && ' · помилки'} · {index + 1} / {test.questions.length}
         </span>
       </div>
       <div className="progress thin">
